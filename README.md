@@ -43,8 +43,8 @@ I can't put the Gemini API key directly into the frontend JS code — it will be
 ## A few things I learned making this
 
 - Thinking-enabled AI models are slower than one would expect even for a single sentence task — lowering the thinking level helped without affecting the text quality too much
-- Streaming the response and making the browser display it as a typewriter effect turned a lengthy waiting time into an actually entertaining experience rather than spinning loading animation- Don’t believe in “the first result” from a data source – the first try to get city photos from Wikipedia returned only the locator map of the city and not the photos itself – that made me switch from including images in the app and focus fully on the AI-written mood line as an app’s personality
-
+- Streaming the response and making the browser display it as a typewriter effect turned a lengthy waiting time into an actually entertaining experience rather than spinning loading animation
+- Don’t believe in “the first result” from a data source – the first try to get city photos from Wikipedia returned only the locator map of the city and not the photos itself – that made me switch from including images in the app and focus fully on the AI-written mood line as an app’s personality
 - GitHub's push protection caught a hard-coded API key in the middle of push – a good reminder why mixing API keys and public repositories is a bad idea
 
 ## What's next

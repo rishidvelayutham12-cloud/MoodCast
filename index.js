@@ -1,8 +1,6 @@
 // Configuration
 const openWeatherApiKey = "c2b261571e40c8b78293ea96aaec9b09";
-const geminiApiKey = ""; // regenerate before going public
-const geminiModel = "gemini-3.5-flash";
-const typewriterIntervalMs = 22; // ms per character 
+const typewriterIntervalMs = 22; // ms per character
 
 // DOM Element References
 const searchForm = document.getElementById("search-form");
@@ -28,7 +26,7 @@ let currentUnit = "C";
 let lastWeather = null;
 let typewriterTimer = null;
 
-// Event Listeners 
+// Event Listeners
 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -65,10 +63,10 @@ locateBtn.addEventListener("click", () => {
 unitCBtn.addEventListener("click", () => setUnit("C"));
 unitFBtn.addEventListener("click", () => setUnit("F"));
 
-// Core Search Flow 
+// Core Search Flow
 // Weather renders as soon as it's back (fast). The tagline handles its
 // own thinking-indicator; typewriter-stream animation independently,
-// with no time limit; it waits as long as it takes.
+// with no time limit: it waits as long as it takes.
 
 async function performSearch(weatherFetchPromise) {
   const requestId = ++currentRequestId;
@@ -107,7 +105,7 @@ function hideLoading() {
   loadingOverlayEl.style.display = "none";
 }
 
-// Rendering 
+// Rendering
 
 function renderWeather(data) {
   lastWeather = {
@@ -182,7 +180,7 @@ function setWeatherIcon(id, iconCode) {
   weatherIconEl.innerHTML = weatherIcons[key];
 }
 
-// Gemini Tagline: thinking indicator; streamed typewriter 
+// Gemini Tagline (via Vercel proxy): thinking indicator; streamed typewriter
 // One silent automatic retry on a 429 rate-limit before showing an error.
 
 function showThinkingIndicator() {
@@ -206,11 +204,6 @@ function stopTypewriter() {
 }
 
 async function streamTagline(cityName, weatherDesc, temp, timezoneOffsetSeconds, requestId, isRetry = false) {
-  if (!geminiApiKey) {
-    showTaglineError("Add a Gemini API key to enable cozy messages.");
-    return;
-  }
-
   if (!isRetry) showThinkingIndicator();
 
   const timeOfDay = getTimeOfDayLabel(timezoneOffsetSeconds);
@@ -243,24 +236,15 @@ No quotation marks, no hashtags, don't repeat the city name more than once.`;
   }
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:streamGenerateContent?alt=sse`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": geminiApiKey
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }],
-          generationConfig: { temperature: 1.0 }
-        })
-      }
-    );
+    const response = await fetch("/api/tagline", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ promptText })
+    });
 
     if (!response.ok || !response.body) {
       const errorBody = response.body ? await response.text() : "no response body";
-      console.error(`Gemini stream failed (${response.status}):`, errorBody);
+      console.error(`Gemini proxy failed (${response.status}):`, errorBody);
 
       // One silent automatic retry on rate limit, after a short wait.
       if (response.status === 429 && !isRetry) {
@@ -333,7 +317,7 @@ No quotation marks, no hashtags, don't repeat the city name more than once.`;
     }
   } catch (error) {
     if (requestId !== currentRequestId) return;
-    console.error("Gemini stream request threw an error:", error);
+    console.error("Gemini proxy request threw an error:", error);
     showTaglineError("Couldn't reach Gemini. Check your connection and try again.");
   }
 }

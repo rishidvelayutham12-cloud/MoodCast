@@ -30,7 +30,7 @@ Pure HTML, CSS, and JavaScript — no framework, no build process, no tooling ne
 
 ### Why there is a proxy
 
-I can't put the Gemini API key directly into the frontend JS code — it will be trivial to grab it using DevTools. Instead of calling the Gemini API from the frontend JS, the app calls my own proxy serverless function (`api/tagline.js`) hosted on Vercel. This proxy function stores the API key as a secret environment variable, makesThis function takes care of storing the actual API key as an environment variable, calls Gemini on behalf of the application and streams the output straight to the browser. No access to the client side for the API key whatsoever.
+I can't put the Gemini API key directly into the frontend JS code, because anyone could grab it with DevTools. Instead, the app calls my own serverless function (`api/tagline.js`) hosted on Vercel. That function keeps the key as a secret environment variable, calls Gemini on the app's behalf, and streams the response straight back to the browser. The key never reaches the client.
 
 ## To run it locally
 
@@ -42,7 +42,7 @@ I can't put the Gemini API key directly into the frontend JS code — it will be
 
 ## A few things I learned making this
 
-- Thinking-enabled AI models are slower than one would expect even for a single sentence task 
+- Hosted AI models get retired quickly. The model I built with was deprecated within a few months and my mood line just hung. Now the app uses Google's auto-updating "latest" model alias, and I moved to the lighter Flash-Lite tier, which writes the line in a few seconds instead of a minute or two with the quality holding up.
 - Streaming the response and making the browser display it as a typewriter effect turned a lengthy waiting time into an actually entertaining experience rather than spinning loading animation
 - Don’t believe in “the first result” from a data source – the first try to get city photos from Wikipedia returned only the locator map of the city and not the photos itself – that made me switch from including images in the app and focus fully on the AI-written mood line as an app’s personality
 - GitHub's push protection caught a hard-coded API key in the middle of push – a good reminder why mixing API keys and public repositories is a bad idea

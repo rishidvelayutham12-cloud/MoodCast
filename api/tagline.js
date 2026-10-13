@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const { promptText } = req.body;
   const geminiApiKey = process.env.GEMINI_API_KEY;
-  const geminiModel = process.env.GEMINI_MODEL || "gemini-flash-latest";
+  const geminiModel = "gemini-flash-lite-latest";
 
 
   if (!geminiApiKey) {

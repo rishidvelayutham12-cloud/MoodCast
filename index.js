@@ -19,6 +19,17 @@ const windSpeedEl = document.getElementById("wind-speed");
 const taglineEl = document.getElementById("tagline");
 const unitCBtn = document.getElementById("unit-c");
 const unitFBtn = document.getElementById("unit-f");
+const lenses = [
+  "its architecture or landmarks",
+  "its parks, rivers, or natural scenery",
+  "its music, art, or festivals",
+  "its history",
+  "the sounds and smells of its streets",
+  "how people there spend a day like this",
+  "its neighborhoods and street life",
+  "its seasonal rhythm or local traditions",
+  "its food"
+];
 
 // State
 let currentRequestId = 0;
@@ -207,7 +218,8 @@ async function streamTagline(cityName, weatherDesc, temp, timezoneOffsetSeconds,
   if (!isRetry) showThinkingIndicator();
 
   const timeOfDay = getTimeOfDayLabel(timezoneOffsetSeconds);
-  const promptText = `Write one short, cozy, atmospheric sentence (under 18 words) capturing the current mood in ${cityName}. It's currently ${timeOfDay} there, ${temp}°C, and ${weatherDesc}. Weave in one specific, real detail about ${cityName}'s culture, cuisine, or daily rhythm — not a generic weather description.
+  const lens = lenses[Math.floor(Math.random() * lenses.length)];
+  const promptText = `Write one short, cozy, atmospheric sentence (under 18 words) capturing the current mood in ${cityName}. It's currently ${timeOfDay} there, ${temp}°C, and ${weatherDesc}. Weave in one specific, real detail about ${cityName} drawn from ${lens}. Avoid the most obvious cliché or the single most famous thing the city is known for.
 
 Example of the tone and specificity wanted: "Kyoto's temple bells fade into a soft evening drizzle, matcha steam curling from tiny stalls."
 

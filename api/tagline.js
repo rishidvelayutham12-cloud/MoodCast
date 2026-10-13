@@ -5,7 +5,8 @@ export default async function handler(req, res) {
 
   const { promptText } = req.body;
   const geminiApiKey = process.env.GEMINI_API_KEY;
-  const geminiModel = "gemini-3.5-flash";
+  const geminiModel = process.env.GEMINI_MODEL || "gemini-flash-latest";
+
 
   if (!geminiApiKey) {
     return res.status(500).json({ error: "Server is missing GEMINI_API_KEY" });
